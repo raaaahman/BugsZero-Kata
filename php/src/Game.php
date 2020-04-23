@@ -67,24 +67,9 @@ class Game {
 		echoln("They have rolled a " . $roll);
 
 		if ($this->inPenaltyBox[$this->currentPlayer]) {
-			if ($roll % 2 != 0) {
-                $this->penaltyBox->getOutOfPenaltyBox(true);
+            $this->penaltyBox->rollInPenaltyBox($roll, $this);
 
-				echoln($this->players[$this->currentPlayer] . " is getting out of the penalty box");
-			$this->places[$this->currentPlayer] = $this->places[$this->currentPlayer] + $roll;
-				if ($this->places[$this->currentPlayer] > 11) $this->places[$this->currentPlayer] = $this->places[$this->currentPlayer] - 12;
-
-				echoln($this->players[$this->currentPlayer]
-						. "'s new location is "
-						.$this->places[$this->currentPlayer]);
-				echoln("The category is " . $this->currentCategory());
-				$this->askQuestion();
-			} else {
-				echoln($this->players[$this->currentPlayer] . " is not getting out of the penalty box");
-                $this->penaltyBox->getOutOfPenaltyBox(false);
-				}
-
-		} else {
+        } else {
 
 		$this->places[$this->currentPlayer] = $this->places[$this->currentPlayer] + $roll;
 			if ($this->places[$this->currentPlayer] > 11) $this->places[$this->currentPlayer] = $this->places[$this->currentPlayer] - 12;
@@ -125,28 +110,10 @@ class Game {
 
 	function wasCorrectlyAnswered() {
 		if ($this->inPenaltyBox[$this->currentPlayer]){
-			if ($this->penaltyBox->isGettingOutOfPenaltyBox()) {
-				echoln("Answer was correct!!!!");
-			$this->purses[$this->currentPlayer]++;
-				echoln($this->players[$this->currentPlayer]
-						. " now has "
-						.$this->purses[$this->currentPlayer]
-						. " Gold Coins.");
-
-				$winner = $this->didPlayerWin();
-				$this->currentPlayer++;
-				if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
-
-				return $winner;
-			} else {
-				$this->currentPlayer++;
-				if ($this->currentPlayer == count($this->players)) $this->currentPlayer = 0;
-				return true;
-			}
+            return $this->penaltyBox->wasCorrectlyAnsweredPenaltyBox($this);
 
 
-
-		} else {
+        } else {
 
 			echoln("Answer was corrent!!!!");
 		$this->purses[$this->currentPlayer]++;
