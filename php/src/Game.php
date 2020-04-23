@@ -16,7 +16,7 @@ class Game {
     var $rockQuestions;
 
     var $currentPlayer = 0;
-    var $isGettingOutOfPenaltyBox;
+    var $penaltyBox;
 
     function  __construct(){
 
@@ -36,6 +36,8 @@ class Game {
 			array_push($this->sportsQuestions, ("Sports Question " . $i));
 			array_push($this->rockQuestions, $this->createRockQuestion($i));
     	}
+
+        $this->penaltyBox = new PenaltyBox();
     }
 
 	function createRockQuestion($index){
@@ -45,7 +47,6 @@ class Game {
 	function isPlayable() {
 		return ($this->howManyPlayers() >= 2);
 	}
-
 	function add($playerName) {
 	   array_push($this->players, $playerName);
 	   $this->places[$this->howManyPlayers()] = 0;
@@ -67,7 +68,7 @@ class Game {
 
 		if ($this->inPenaltyBox[$this->currentPlayer]) {
 			if ($roll % 2 != 0) {
-				$this->isGettingOutOfPenaltyBox = true;
+                $this->penaltyBox->getOutOfPenaltyBox(true);
 
 				echoln($this->players[$this->currentPlayer] . " is getting out of the penalty box");
 			$this->places[$this->currentPlayer] = $this->places[$this->currentPlayer] + $roll;
@@ -80,7 +81,7 @@ class Game {
 				$this->askQuestion();
 			} else {
 				echoln($this->players[$this->currentPlayer] . " is not getting out of the penalty box");
-				$this->isGettingOutOfPenaltyBox = false;
+                $this->penaltyBox->getOutOfPenaltyBox(false);
 				}
 
 		} else {
@@ -124,7 +125,7 @@ class Game {
 
 	function wasCorrectlyAnswered() {
 		if ($this->inPenaltyBox[$this->currentPlayer]){
-			if ($this->isGettingOutOfPenaltyBox) {
+			if ($this->penaltyBox->isGettingOutOfPenaltyBox()) {
 				echoln("Answer was correct!!!!");
 			$this->purses[$this->currentPlayer]++;
 				echoln($this->players[$this->currentPlayer]
